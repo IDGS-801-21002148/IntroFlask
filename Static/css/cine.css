@@ -1,0 +1,68 @@
+body {
+    background-color: #003366; /* Blue background */
+    color: white; /* White text */
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 800px;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #002244; /* Darker blue for the form container */
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+}
+
+.cinepolis-logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffcc00; /* Yellow color for logo */
+}
+
+.form-label {
+    font-weight: bold;
+    color: white; /* White text for labels */
+}
+
+input, .form-control {
+    background-color: #003366; /* Matching blue background for inputs */
+    color: white; /* White text in the input fields */
+    border: 1px solid #ffcc00; /* Yellow border to make inputs stand out */
+}
+
+input:focus, .form-control:focus {
+    border-color: #ffcc00; /* Yellow border on focus */
+    box-shadow: 0 0 5px #ffcc00; /* Yellow shadow on focus */
+}
+
+.btn-primary {
+    background-color: #ffcc00; /* Yellow background for buttons */
+    color: black; /* Black text on buttons */
+    border: none;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #e6b800; /* Slightly darker yellow on hover */
+}
+
+.btn-secondary {
+    background-color: #cccccc; /* Light gray background for secondary button */
+    color: black; /* Black text on secondary button */
+    border: none;
+    width: 100%;
+}
+
+.radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.alert {
+    background-color: #ffcc00; /* Yellow background for alerts */
+    color: black; /* Black text for alert messages */
+    font-weight: bold;
+}

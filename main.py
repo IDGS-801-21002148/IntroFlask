@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -57,9 +57,46 @@ def operas():
     </form>
     '''
 
+
+
+
 @app.route("/procesar", methods=["POST"])
 def procesar():
     return "<h1>Formulario enviado correctamente</h1>"
+
+#-----------------------------------------------------------------------
+
+
+@app.route("/OperasBas")
+def operas1():
+    return render_template("OperasBas.html", resultado="")
+
+@app.route("/resultado", methods=["POST"])
+def result():
+    n1 = request.form.get("n1")
+    n2 = request.form.get("n2")
+    operacion = request.form.get("operacion")
+
+    try:
+        n1 = int(n1)
+        n2 = int(n2)
+
+        if operacion == "suma":
+            resultado = "{} + {} = {}".format(n1, n2, n1 + n2)
+        elif operacion == "resta":
+            resultado = "{} - {} = {}".format(n1, n2, n1 - n2)
+        elif operacion == "division":
+            resultado = "Error: No se puede dividir por cero" if n2 == 0 else "{} / {} = {}".format(n1, n2, n1 / n2)
+        else:
+          
+            resultado = "La multiplicación de {} x {} es {}".format(n1, n2, n1 * n2)
+
+    except ValueError:
+        resultado = "Datos inválidos"
+
+    return render_template("OperasBas.html", resultado=resultado, n1=n1, n2=n2, operacion=operacion)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
