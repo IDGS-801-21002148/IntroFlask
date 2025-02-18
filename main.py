@@ -1,4 +1,49 @@
 from flask import Flask, render_template, request
+from datetime import datetime
+
+# Clase Zodiaco
+class Zodiaco:
+    def configurar_rutas(self, app):
+        @app.route("/zodiaco", methods=["GET", "POST"])
+        def zodiaco_index():
+            usuario = None
+            if request.method == "POST":
+                nombre = request.form["nombre"]
+                apellido_p = request.form["apellido_p"]
+                apellido_m = request.form["apellido_m"]
+                dia = int(request.form["dia"])
+                mes = int(request.form["mes"])
+                anio = int(request.form["anio"])
+                sexo = request.form["sexo"]
+                usuario = self.datos(nombre, apellido_p, apellido_m, dia, mes, anio, sexo)
+            return render_template("ZodiacoChino.html", usuario=usuario)
+
+    def datos(self, nombre, apellido_p, apellido_m, dia, mes, anio, sexo):
+        edad = self.edadUsuario(anio)
+        signo_chino, imagen_signo = self.signo(anio)
+        return {
+            "nombre": nombre,
+            "apellido_p": apellido_p,
+            "apellido_m": apellido_m,
+            "fecha_nacimiento": f"{dia}/{mes}/{anio}",
+            "edad": edad,
+            "sexo": sexo,
+            "signo_chino": signo_chino,
+            "imagen_signo": imagen_signo
+        }
+
+    def signo(self, anio):  
+        signos = ["mono", "gallo", "perro", "cerdo", "raton", "buey", "tigre",
+                  "conejo", "dragón", "serpiente", "caballo", "cabra"]
+        signo = signos[anio % 12]
+        imagen = f"static/img/{signo.lower()}.jpg"
+        return signo, imagen
+
+    def edadUsuario(self, anio_nacimiento):
+        fecha_actual = datetime.now()
+        edad = fecha_actual.year - anio_nacimiento
+        return edad
+
 
 app = Flask(__name__)
 
@@ -48,24 +93,16 @@ def operas():
         <label for="name">Nombre:</label>
         <input type="text" id="name" name="name" required>
         <br><br>
-
         <label for="email">Correo:</label>
         <input type="email" id="email" name="email" required>
         <br><br>
-
         <button type="submit">Enviar</button>
     </form>
     '''
 
-
-
-
 @app.route("/procesar", methods=["POST"])
 def procesar():
     return "<h1>Formulario enviado correctamente</h1>"
-
-#-----------------------------------------------------------------------
-
 
 @app.route("/OperasBas")
 def operas1():
@@ -88,7 +125,6 @@ def result():
         elif operacion == "division":
             resultado = "Error: No se puede dividir por cero" if n2 == 0 else "{} / {} = {}".format(n1, n2, n1 / n2)
         else:
-          
             resultado = "La multiplicación de {} x {} es {}".format(n1, n2, n1 * n2)
 
     except ValueError:
@@ -96,7 +132,7 @@ def result():
 
     return render_template("OperasBas.html", resultado=resultado, n1=n1, n2=n2, operacion=operacion)
 
-
-
 if __name__ == "__main__":
+    zodiaco = Zodiaco()
+    zodiaco.configurar_rutas(app)
     app.run(debug=True, port=5000)
