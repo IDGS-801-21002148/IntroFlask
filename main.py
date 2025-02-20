@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from datetime import datetime
+import forms
 
 # Clase Zodiaco
 class Zodiaco:
@@ -131,6 +132,27 @@ def result():
         resultado = "Datos inválidos"
 
     return render_template("OperasBas.html", resultado=resultado, n1=n1, n2=n2, operacion=operacion)
+
+
+  
+@app.route("/Alumnos", methods=["GET", "POST"])
+def Alumnos():
+    mat=''
+    nom=''
+    ape=''
+    email=''
+   
+    alumno_clas = forms.UserForm(request.form)
+    if request.method == "POST":
+        mat = alumno_clas.matricula.data
+        nom = alumno_clas.nombre.data
+        ape = alumno_clas.apellido.data
+        email = alumno_clas.correo.data
+ 
+    return render_template("Alumnos.html", form=alumno_clas, mat=mat, nom=nom, ape=ape, email=email)
+
+
+
 
 if __name__ == "__main__":
     zodiaco = Zodiaco()
