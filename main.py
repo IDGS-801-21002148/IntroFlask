@@ -1,6 +1,31 @@
-from flask import Flask, render_template, request
-from datetime import datetime
+from flask import Flask, render_template, request , jsonify , url_for
 import forms
+from flask_wtf.csrf import CSRFProtect
+from flask import flash
+from flask import g
+
+
+
+app=Flask(__name__)
+app.secret_key ="secret key"
+csrf = CSRFProtect()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
+@app.before_request
+def before_request():
+    g.user = "PEPE"    
+    print("before1")
+
+@app.after_request
+def after_request(response):    
+    print("after3")
+    return response
+
+
 
 # Clase Zodiaco
 class Zodiaco:
@@ -46,7 +71,7 @@ class Zodiaco:
         return edad
 
 
-app = Flask(__name__)
+
 
 @app.route('/')
 def index():
@@ -141,20 +166,25 @@ def Alumnos():
     nom=''
     ape=''
     email=''
-   
+    
     alumno_clas = forms.UserForm(request.form)
-    if request.method == "POST":
+    if request.method == "POST" and alumno_clas.validate():
         mat = alumno_clas.matricula.data
         nom = alumno_clas.nombre.data
         ape = alumno_clas.apellido.data
         email = alumno_clas.correo.data
- 
+
+        mensaje='BIENVENIDO{}'.format(nom)
+        flash(mensaje)
+
     return render_template("Alumnos.html", form=alumno_clas, mat=mat, nom=nom, ape=ape, email=email)
 
 
 
 
+
 if __name__ == "__main__":
+    csrf.init_app(app)
     zodiaco = Zodiaco()
     zodiaco.configurar_rutas(app)
     app.run(debug=True, port=5000)
