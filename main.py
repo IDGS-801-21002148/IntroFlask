@@ -1,15 +1,12 @@
-from flask import Flask, render_template, request , jsonify , url_for
-import forms
+from flask import Flask, render_template, request, jsonify, url_for, g, flash
+from datetime import datetime
 from flask_wtf.csrf import CSRFProtect
-from flask import flash
-from flask import g
+import forms
+import forms2
 
-
-
-app=Flask(__name__)
-app.secret_key ="secret key"
-csrf = CSRFProtect()
-
+app = Flask(__name__)
+app.secret_key = "secret key"
+csrf = CSRFProtect(app)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -17,32 +14,35 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    g.user = "PEPE"    
+    g.user = "PEPE"
     print("before1")
 
 @app.after_request
-def after_request(response):    
+def after_request(response):
     print("after3")
     return response
 
-
-
-# Clase Zodiaco
 class Zodiaco:
     def configurar_rutas(self, app):
         @app.route("/zodiaco", methods=["GET", "POST"])
         def zodiaco_index():
             usuario = None
-            if request.method == "POST":
-                nombre = request.form["nombre"]
-                apellido_p = request.form["apellido_p"]
-                apellido_m = request.form["apellido_m"]
-                dia = int(request.form["dia"])
-                mes = int(request.form["mes"])
-                anio = int(request.form["anio"])
-                sexo = request.form["sexo"]
+            form = forms2.UserForm(request.form)
+            if request.method == "POST" and form.validate():
+                nombre = form.nombre.data
+                apellido_p = form.apellido_p.data
+                apellido_m = form.apellido_m.data
+                dia = int(form.dia.data)
+                mes = int(form.mes.data)
+                anio = int(form.anio.data)
+                sexo = form.sexo.data
+
                 usuario = self.datos(nombre, apellido_p, apellido_m, dia, mes, anio, sexo)
-            return render_template("ZodiacoChino.html", usuario=usuario)
+
+                mensaje = f"Datos de {nombre} guardados correctamente."
+                flash(mensaje)
+
+            return render_template("ZodiacoChino.html", form=form, usuario=usuario)
 
     def datos(self, nombre, apellido_p, apellido_m, dia, mes, anio, sexo):
         edad = self.edadUsuario(anio)
@@ -58,9 +58,8 @@ class Zodiaco:
             "imagen_signo": imagen_signo
         }
 
-    def signo(self, anio):  
-        signos = ["mono", "gallo", "perro", "cerdo", "raton", "buey", "tigre",
-                  "conejo", "dragón", "serpiente", "caballo", "cabra"]
+    def signo(self, anio):
+        signos = ["mono", "gallo", "perro", "cerdo", "raton", "buey", "tigre", "conejo", "dragón", "serpiente", "caballo", "cabra"]
         signo = signos[anio % 12]
         imagen = f"static/img/{signo.lower()}.jpg"
         return signo, imagen
@@ -69,9 +68,6 @@ class Zodiaco:
         fecha_actual = datetime.now()
         edad = fecha_actual.year - anio_nacimiento
         return edad
-
-
-
 
 @app.route('/')
 def index():
@@ -130,10 +126,6 @@ def operas():
 def procesar():
     return "<h1>Formulario enviado correctamente</h1>"
 
-@app.route("/OperasBas")
-def operas1():
-    return render_template("OperasBas.html", resultado="")
-
 @app.route("/resultado", methods=["POST"])
 def result():
     n1 = request.form.get("n1")
@@ -141,8 +133,8 @@ def result():
     operacion = request.form.get("operacion")
 
     try:
-        n1 = int(n1)
-        n2 = int(n2)
+        n1 = float(n1)
+        n2 = float(n2)
 
         if operacion == "suma":
             resultado = "{} + {} = {}".format(n1, n2, n1 + n2)
@@ -158,14 +150,12 @@ def result():
 
     return render_template("OperasBas.html", resultado=resultado, n1=n1, n2=n2, operacion=operacion)
 
-
-  
 @app.route("/Alumnos", methods=["GET", "POST"])
 def Alumnos():
-    mat=''
-    nom=''
-    ape=''
-    email=''
+    mat = ''
+    nom = ''
+    ape = ''
+    email = ''
     
     alumno_clas = forms.UserForm(request.form)
     if request.method == "POST" and alumno_clas.validate():
@@ -174,17 +164,15 @@ def Alumnos():
         ape = alumno_clas.apellido.data
         email = alumno_clas.correo.data
 
-        mensaje='BIENVENIDO{}'.format(nom)
+        mensaje = 'BIENVENIDO {}'.format(nom)
         flash(mensaje)
 
     return render_template("Alumnos.html", form=alumno_clas, mat=mat, nom=nom, ape=ape, email=email)
 
-
-
-
+zodiaco = Zodiaco()
+zodiaco.configurar_rutas(app)
 
 if __name__ == "__main__":
     csrf.init_app(app)
-    zodiaco = Zodiaco()
-    zodiaco.configurar_rutas(app)
+    
     app.run(debug=True, port=5000)

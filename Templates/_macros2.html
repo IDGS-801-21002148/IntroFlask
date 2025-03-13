@@ -1,0 +1,65 @@
+{% macro campo_nombre(form) %}
+    <div class="form-group">
+        <label for="nombre">{{ form.nombre.label }}</label>
+        {{ form.nombre(class="form-control") }}
+        {% if form.nombre.errors %}
+            <ul class="error-list">
+                {% for error in form.nombre.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro campo_apellido_p(form) %}
+    <div class="form-group">
+        <label for="apellido_p">{{ form.apellido_p.label }}</label>
+        {{ form.apellido_p(class="form-control") }}
+        {% if form.apellido_p.errors %}
+            <ul class="error-list">
+                {% for error in form.apellido_p.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro campo_apellido_m(form) %}
+    <div class="form-group">
+        <label for="apellido_m">{{ form.apellido_m.label }}</label>
+        {{ form.apellido_m(class="form-control") }}
+        {% if form.apellido_m.errors %}
+            <ul class="error-list">
+                {% for error in form.apellido_m.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro campo_fecha(form) %}
+    <div class="form-group">
+        <label for="dia">{{ form.dia.label }}</label>
+        {{ form.dia(class="form-control") }}
+        <label for="mes">{{ form.mes.label }}</label>
+        {{ form.mes(class="form-control") }}
+        <label for="anio">{{ form.anio.label }}</label>
+        {{ form.anio(class="form-control") }}
+        {% if form.dia.errors or form.mes.errors or form.anio.errors %}
+            <ul class="error-list">
+                {% for error in form.dia.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                {% for error in form.mes.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                {% for error in form.anio.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}

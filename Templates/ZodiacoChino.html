@@ -1,53 +1,27 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Usuario</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/Zodiaco.css" rel="stylesheet">
-</head>
-<body>
+{% extends "layout3.html" %}
+
+{% import "_macros2.html" as macro %}
+
+{% block content %}
     <div class="container mt-5">
         <div class="row">
-         
             <div class="col-md-6">
                 <div class="card p-3">
                     <h4 class="text-center">Datos Personales</h4>
-                    <form method="POST">
-                        <label>Nombre:</label>
-                        <input type="text" name="nombre" class="form-control" required>
-
-                        <label>Apellido Paterno:</label>
-                        <input type="text" name="apellido_p" class="form-control" required>
-
-                        <label>Apellido Materno:</label>
-                        <input type="text" name="apellido_m" class="form-control" required>
-
-                        <label>Fecha de Nacimiento:</label>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="number" name="dia" class="form-control" placeholder="Día" required>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="number" name="mes" class="form-control" placeholder="Mes" required>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="number" name="anio" class="form-control" placeholder="Año" required>
-                            </div>
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+                        {{ macro.campo_nombre(form) }}
+                        {{ macro.campo_apellido_p(form) }}
+                        {{ macro.campo_apellido_m(form) }}
+                        {{ macro.campo_fecha(form) }}
+                        <div class="form-group">
+                            <label>Sexo</label>
+                            {{ form.sexo(class="form-control") }}
                         </div>
-
-                        <label>Sexo:</label>
-                        <div>
-                            <input type="radio" name="sexo" value="Masculino" required> Masculino
-                            <input type="radio" name="sexo" value="Femenino" required> Femenino
-                        </div>
-
-                        <button type="submit" class="btn btn-primary mt-3">Imprimir</button>
+                        <button type="submit" class="btn btn-primary mt-3">Enviar</button>
                     </form>
                 </div>
             </div>
-
             <div class="col-md-6">
                 {% if usuario %}
                 <div class="card p-3">
@@ -57,12 +31,11 @@
                     <p><strong>Edad:</strong> {{ usuario.edad }} años</p>
                     <p><strong>Sexo:</strong> {{ usuario.sexo }}</p>
                     <p><strong>Signo Chino:</strong> {{ usuario.signo_chino }}</p>
-                    
                     <img src="{{ usuario.imagen_signo }}" alt="{{ usuario.signo_chino }}" class="img-fluid">
                 </div>
                 {% endif %}
             </div>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
+
